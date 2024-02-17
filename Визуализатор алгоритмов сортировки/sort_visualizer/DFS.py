@@ -1,7 +1,6 @@
 import random
 import networkx as nx
 from matplotlib import pyplot as plt
-from collections import deque
 
 class DFS:
     def generate_random_graph(n):

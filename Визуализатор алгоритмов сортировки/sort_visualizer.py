@@ -2,9 +2,6 @@ import random
 import time
 import networkx as nx
 import matplotlib.pyplot as plt
-import easygui
-import io
-from PIL import Image
 from collections import deque
 
 class QuickSort:
