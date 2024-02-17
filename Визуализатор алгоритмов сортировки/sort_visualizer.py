@@ -2,6 +2,9 @@ import random
 import time
 import networkx as nx
 import matplotlib.pyplot as plt
+import easygui
+import io
+from PIL import Image
 from collections import deque
 
 class QuickSort:
@@ -53,7 +56,7 @@ class MergeSort:
         self.ax.set_title('Сортировка слиянием (Merge Sort)')
         self.ax.set_xlabel('Количество элементов в массиве')
         self.ax.set_ylabel('Значения элементов в массиве')
-        plt.pause(0.01)
+        plt.pause(0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001)
 
     def merge_sort(self, array):
         if len(array) > 1:
@@ -126,7 +129,7 @@ class InsertionSort:
         self.ax.set_title('Сортировка вставкой (Insertion Sort)')
         self.ax.set_xlabel('Количество элементов в массиве')
         self.ax.set_ylabel('Значения элементов в массиве')
-        plt.pause(0.0001)
+        plt.pause(0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001)
 
     def insertion_sort(self):
         for i in range(1, len(self.array)):
@@ -224,14 +227,11 @@ class BFS:
     def generate_random_graph(n):
         graph = {}
         nodes = [str(i) for i in range(n)]
-
         for node in nodes:
             graph[node] = []
-
         for i, node in enumerate(nodes):
             for other_node in random.sample(nodes[:i] + nodes[i + 1:], k=random.randint(0, n - 1)):
                 graph[node].append(other_node)
-
         return graph
 
     def BFS(graph, start):
@@ -239,24 +239,39 @@ class BFS:
         queue = deque([(start, [start])])
         visited.add(start)
         result = []
-
+        intermediate_results = []
         while queue:
             node, path = queue.popleft()
             result.append(node)
-
+            intermediate_results.append(list(result))
             for neighbor in graph[node]:
                 if neighbor not in visited:
                     queue.append((neighbor, path + [neighbor]))
                     visited.add(neighbor)
                     result.append(neighbor)
+                    intermediate_results.append(list(result))
+        return intermediate_results
 
-        return result
+    def visualize_graph(graph, intermediate_results):
+        G = nx.Graph()
+        plt.figure(figsize=(8, 6))
 
-    def visualize_graph(graph):
-        G = nx.Graph(graph)
-        pos = nx.spring_layout(G)
-        nx.draw(G, pos, with_labels=True, node_size=500, node_color='b')
-        plt.show()
+        for node in intermediate_results[0]:
+            G.add_node(node)
+
+        for i in range(1, len(intermediate_results)):
+            plt.clf()
+
+            for edge in graph.items():
+                for n in edge[1]:
+                    if edge[0] in intermediate_results[i] and n in intermediate_results[i]:
+                        G.add_edge(edge[0], n)
+
+            pos = nx.spring_layout(G)
+            nx.draw(G, pos, with_labels=True, node_size=500, node_color='b')
+            plt.title(f'Шаг {i}')
+            plt.pause(0.5)
+            plt.show()
 
 class DFS:
     def generate_random_graph(n):
@@ -274,27 +289,45 @@ class DFS:
 
     def DFS(graph, start):
         visited = set()
-        queue = deque([(start, [start])])
+        stack = [(start, [start])]
         visited.add(start)
         result = []
+        intermediate_results = []
 
-        while queue:
-            node, path = queue.pop()
+        while stack:
+            node, path = stack.pop()
             result.append(node)
+            intermediate_results.append(list(result))
 
             for neighbor in graph[node]:
                 if neighbor not in visited:
-                    queue.append((neighbor, path + [neighbor]))
+                    stack.append((neighbor, path + [neighbor]))
                     visited.add(neighbor)
                     result.append(neighbor)
+                    intermediate_results.append(list(result))
 
-        return result
+        return intermediate_results
 
-    def visualize_graph(graph):
-        G = nx.Graph(graph)
-        pos = nx.spring_layout(G)
-        nx.draw(G, pos, with_labels=True, node_size=500, node_color='b')
-        plt.show()
+    def visualize_graph(graph, intermediate_results):
+        G = nx.Graph()
+        plt.figure(figsize=(8, 6))
+
+        for node in intermediate_results[0]:
+            G.add_node(node)
+
+        for i in range(1, len(intermediate_results)):
+            plt.clf()
+
+            for edge in graph.items():
+                for n in edge[1]:
+                    if edge[0] in intermediate_results[i] and n in intermediate_results[i]:
+                        G.add_edge(edge[0], n)
+
+            pos = nx.spring_layout(G)
+            nx.draw(G, pos, with_labels=True, node_size=500, node_color='b')
+            plt.title(f'Шаг {i}')
+            plt.pause(0.5)
+            plt.show()
 
 class KMP:
     def compilePatternArray(self, pattern):
@@ -465,10 +498,10 @@ if __name__ == '__main__':
             for node, neighbors in random_graph.items():
                 print(f'{node}: {neighbors}')
             print('Обход сгенерированного графа, начиная с вершины', start_node)
-            result = BFS.BFS(random_graph, start_node)
-            print(' -> '.join(result))
+            intermediate_results = BFS.BFS(random_graph, start_node)
+            BFS.visualize_graph(random_graph, intermediate_results)
+            print(' -> '.join(map(str, intermediate_results)))
             end_time = time.time() - start_time
-            BFS.visualize_graph(random_graph)
             print('Время выполнения программы:', end_time, 'секунд')
             if input('Желаете продолжить работу? (да/нет): ').lower() != 'да':
                 break
@@ -482,10 +515,10 @@ if __name__ == '__main__':
             for node, neighbors in random_graph.items():
                 print(f'{node}: {neighbors}')
             print('Обход сгенерированного графа, начиная с вершины', start_node)
-            result = DFS.DFS(random_graph, start_node)
-            print(' -> '.join(result))
+            intermediate_results = DFS.DFS(random_graph, start_node)
+            DFS.visualize_graph(random_graph, intermediate_results)
+            print(' -> '.join(map(str, intermediate_results)))
             end_time = time.time() - start_time
-            DFS.visualize_graph(random_graph)
             print('Время выполнения программы:', end_time, 'секунд')
             if input('Желаете продолжить работу? (да/нет): ').lower() != 'да':
                 break

@@ -137,10 +137,10 @@ if __name__ == '__main__':
             for node, neighbors in random_graph.items():
                 print(f'{node}: {neighbors}')
             print('Обход сгенерированного графа, начиная с вершины', start_node)
-            result = BFS.BFS(random_graph, start_node)
-            print(' -> '.join(result))
+            intermediate_results = BFS.BFS(random_graph, start_node)
+            BFS.visualize_graph(random_graph, intermediate_results)
+            print(' -> '.join(map(str, intermediate_results)))
             end_time = time.time() - start_time
-            BFS.visualize_graph(random_graph)
             print('Время выполнения программы:', end_time, 'секунд')
             if input('Желаете продолжить работу? (да/нет): ').lower() != 'да':
                 break
@@ -154,10 +154,10 @@ if __name__ == '__main__':
             for node, neighbors in random_graph.items():
                 print(f'{node}: {neighbors}')
             print('Обход сгенерированного графа, начиная с вершины', start_node)
-            result = DFS.DFS(random_graph, start_node)
-            print(' -> '.join(result))
+            intermediate_results = DFS.DFS(random_graph, start_node)
+            DFS.visualize_graph(random_graph, intermediate_results)
+            print(' -> '.join(map(str, intermediate_results)))
             end_time = time.time() - start_time
-            DFS.visualize_graph(random_graph)
             print('Время выполнения программы:', end_time, 'секунд')
             if input('Желаете продолжить работу? (да/нет): ').lower() != 'да':
                 break
